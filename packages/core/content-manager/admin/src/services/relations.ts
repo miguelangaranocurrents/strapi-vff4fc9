@@ -122,10 +122,17 @@ const relationsApi = contentManagerApi.injectEndpoints({
       },
       serializeQueryArgs: (args) => {
         const { endpointName, queryArgs } = args;
+        /**
+         * The results depend on the source document (or component) being edited, so it must be
+         * part of the cache key. Otherwise two fields targeting the same model (e.g. two
+         * components of a dynamic zone) would share each other's already-related exclusions.
+         */
         return {
           endpointName,
           model: queryArgs.model,
           targetField: queryArgs.targetField,
+          id: queryArgs.params?.id,
+          locale: queryArgs.params?.locale,
           _q: queryArgs.params?._q,
           idsToOmit: queryArgs.params?.idsToOmit,
           idsToInclude: queryArgs.params?.idsToInclude,
